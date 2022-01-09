@@ -1,0 +1,27 @@
+[Unit]
+Description=DS18B20 1-Wire temperature sensor to MQTT gateway
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/temp2mqtt/
+ExecStart=/usr/bin/python3 -u temp2mqtt.py -c sensors.yaml
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+#Environment=PYTHONUNBUFFERED=1
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
+#Edit value for WorkingDirectory
+#Copy this file to /etc/systemd/system/
+#sudo cp temp2mqtt.service /etc/systemd/system
+#sudo systemctl daemon-reload
+#sudo systemctl enable temp2mqtt.service
+#sudo systemctl start temp2mqtt.service
+#sudo systemctl stop temp2mqtt.service
+#sudo systemctl status temp2mqtt.service
