@@ -18,7 +18,8 @@ def read_temp_raw(path):
     sensor_file.close()
     sensor_data = raw_data[1].split("t=") # split the second line output at t=
     temp_c = float(sensor_data[1]) / 1000.0 # convert value of t= to calcius
-    return temp_c
+    temp_f = (temp_c*9/5) + 32
+    return format(temp_f, ".2f") #round 2 decimal places
 
 @click.command()
 @click.option('--config', '-c', help='path to your config file i.e. sensors.yml')
@@ -31,10 +32,12 @@ def main(config):
     client.loop_start()
     while True:
         for sensor in config_yaml['sensors']:
-            sensor_value = read_temp_raw(sensor['path'])
-            sensor_name = sensor['friendly']
-            friendly_name = "home-assistant/{}/temperature".format(sensor_name)
-            client.publish(friendly_name, sensor_value)
-            print(friendly_name, sensor_value)
+            if os.path.exists(sensor['path']):
+                sensor_value = read_temp_raw(sensor['path'])
+                topic_prefix = config_yaml['mqtt']['topic']
+                sensor_name = sensor['subtopic']
+                topic = "{}/{}".format(topic_prefix,sensor_name)
+                client.publish(topic, sensor_value)
+                print(topic, sensor_value)
         time.sleep(int(config_yaml['mqtt']['interval_seconds']))
 main()
