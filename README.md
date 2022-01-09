@@ -27,7 +27,7 @@ virtualenv -p /usr/bin/python3 temp-mqtt
 cd temp-mqtt
 source bin/activate
 git clone https://github.com/ngonzal/DS18B20-mqtt.git
-cd DS18B20-mqtt
+cd temp2mqtt
 pip install -r requirements.txt
-python temp-mqtt.py -c sensors.yml
+python temp2mqtt.py -c sensors.yml
 ```
